@@ -11,13 +11,18 @@ WORKDIR /workspaces/${APP_NAME}
 ARG SERVERS_DIR=/home/vscode/.rsp/redhat-server-connector/runtimes/installations
 ARG WILDFLY_VER=23.0.2.Final
 ARG RSP_SERVERS_DIR=/home/vscode/.rsp/redhat-server-connector/servers
+ARG PG_VERSION=17
 
 ENV LANG=C.UTF-8 \
     TZ=Asia/Tokyo
 
 # Install packages
-RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
-    # apt-get install --no-install-recommends -y \
+RUN install -d /usr/share/postgresql-common/pgdg && \
+    curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
+    sh -c 'echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
+    apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
+    apt-get install --no-install-recommends -y \
+    postgresql-client-${PG_VERSION} && \
     apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install Wildfly
