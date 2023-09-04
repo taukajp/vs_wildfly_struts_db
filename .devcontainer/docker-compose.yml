@@ -12,6 +12,7 @@ services:
         VARIANT: "${VARIANT:-11-bullseye}"
         APP_NAME: ${APP_NAME:-myapp}
         WILDFLY_VER: "${WILDFLY_VER:-23.0.2.Final}"
+        PG_DRIVER_VER: "${PG_DRIVER_VER:-42.7.4}"
 
     volumes:
       - ..:/workspaces/${APP_NAME:-myapp}:cached
