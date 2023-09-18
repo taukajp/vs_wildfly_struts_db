@@ -25,6 +25,7 @@ services:
 
     depends_on:
       - db-postgres
+      - db-mysql
 
   db-postgres:
     image: postgres:${PG_VERSION:-17}
@@ -40,5 +41,19 @@ services:
       LANG: "C.UTF-8"
       TZ: "Asia/Tokyo"
 
+  db-mysql:
+    image: mysql:${MYSQL_VERSION:-8.4}
+    restart: unless-stopped
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mysql/dbscript:/docker-entrypoint-initdb.d
+    environment:
+      # MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      LANG: "C.UTF-8"
+      TZ: "Asia/Tokyo"
+
 volumes:
   postgres-data: null
+  mysql-data: null
